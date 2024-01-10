@@ -27,7 +27,7 @@ struct ContentView: View {
                     Text("How Do You Feel?")
                         .font(.system(.title))
                     HStack {
-                        ForEach(0..<moodOptions.count) { index in
+                        ForEach(Array(0..<moodOptions.count), id: \.self) { index in
                             MoodButtonView(mood: moodOptions[index], isSelected: selectedMoodIndex == index) {
                                 selectedMoodIndex = index
                             }
@@ -36,12 +36,12 @@ struct ContentView: View {
                     Spacer()
                     Text("What are you doing now?")
                     HStack {
-                        ForEach(0..<activities.count) { index in
+                        ForEach(Array(0..<activities.count), id: \.self) { index in
                             ActivityButtonView(activity: activities[index], isSelected: selectedActivities == index) {
                                 selectedActivities = index
                             }
-                            
                         }
+
                         .frame(width: 70,height: 50)
                     }
                     Spacer()
@@ -76,7 +76,7 @@ struct ContentView: View {
                                 print("Error saving mood: \(error)")
                             }
                         }
-                        success = true
+                       // success = true
                     }
                     
                    

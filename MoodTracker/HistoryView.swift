@@ -7,17 +7,18 @@
 
 import SwiftUI
 import CoreData
+import Charts
 
 struct HistoryView: View {
     @Environment(\.managedObjectContext) var moc
     @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \Mood.timestamp, ascending: false)]) var moods: FetchedResults<Mood>
-
-    @State private var viewRecords = false
-    @State private var selectedActivity: String?
+    
+    @State var viewModel: HistoryViewModel
     @State private var selectedPickerOption: String = "Mood"
+
     
     var filteredMoods: [Mood] {
-        if let selectedActivity = selectedActivity, selectedActivity != "All" {
+        if let selectedActivity = viewModel.selectedActivity, selectedActivity != "All" {
             return moods.filter { $0.activities == selectedActivity }
         } else {
             return Array(moods)
@@ -29,30 +30,44 @@ struct HistoryView: View {
     
     let moodOptions = ["Good", "Bad", "Neutral","Angry"]
     let activityOptions = ["Sports", "Home", "Work", "Socializing", "Other"]
+    let colorForMood : [String:Color] = [
+        "Angry" : .red,
+        "Good" : .green,
+        "Bad" : .orange,
+        "Neutral" : .cyan
+    ]
+    let colorForActivity : [String:Color] = [
+        "Sports" : .red,
+        "Home" : .green,
+        "Work" : .orange,
+        "Socializing" : .cyan,
+        "Other" : .gray
+    ]
 
 
     var body: some View {
-        if viewRecords == true {
+        if viewModel.viewRecords == true {
             VStack {
                 HStack {
                     ForEach(activities, id: \.self) { activity in
-                        ActivityButtonView(activity: activity, isSelected: selectedActivity == activity) {
-                            selectedActivity = activity
+                        ActivityButtonView(activity: activity, isSelected: viewModel.selectedActivity == activity) {
+                            viewModel.selectedActivity = activity
                         }
                         .frame(width: 70, height: 50)
                     }
                 }
                 
                 List(filteredMoods) { mood in
-                    Text("\(mood.mood ?? "Unknown") - \(formattedDate(mood.timestamp ?? Date())) - \(mood.name ?? "unknown") - \(mood.activities ?? "unknown")")
+                    Text("\(mood.mood ?? "Unknown") - \(viewModel.formattedDate(mood.timestamp ?? Date())) - \(mood.name ?? "unknown") - \(mood.activities ?? "unknown")")
+                    
                 }
 
                 Button("OK") {
-                    viewRecords = false
+                    viewModel.viewRecords = false
                 }
                 
                 Button("Clear All") {
-                    clearAllMoods()
+                    viewModel.clearAllMoods(moc: moc)
                 }
                 .foregroundColor(.red)
             }
@@ -60,27 +75,49 @@ struct HistoryView: View {
             .navigationBarTitle("History")
         } else {
             VStack {
-                Picker("Select Option", selection: $selectedPickerOption) {
+                Picker("Select Option", selection:$selectedPickerOption) {
+                   
                     ForEach(pickerOptions, id: \.self) { option in
                         Text(option)
+                        
                     }
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 .padding()
 
                 if selectedPickerOption == "Mood" {
+                   // let _: () = viewModel.dataClear()
+                    
                     ScrollView(.horizontal) {
+                        
                         HStack {
                             ForEach(moodOptions, id: \.self) { mood in
                                 CircleButtonView(title: mood) {
                                     // Burada mood seçme işlemleri yapılacak
                                     print("Selected Mood: \(mood)")
-                                    printActivityStatistics(for: mood)
+                                    viewModel.printActivityStatistics(for: mood)
+                                    //viewModel.dataClear()
+                                    
                                 }
                                 .padding()
                             }
                         }
                     }
+                    VStack {
+                            Chart {
+                                ForEach(viewModel.pieChartData) { data in
+                                    let moodColor = colorForActivity[data.title] ?? .black
+                                    SectorMark(angle: .value("Activity", data.value),
+                                               angularInset: 2.0)
+                                        .foregroundStyle(moodColor)
+                                        .annotation(position: .overlay){
+                                            Text("\(Int(data.value))/\(data.title)")
+                                                .font(.headline)
+                                                .foregroundStyle(.white)
+                                        }
+                                }
+                            }
+                        }
                 } else if selectedPickerOption == "Activity" {
                     ScrollView(.horizontal) {
                         HStack {
@@ -88,43 +125,41 @@ struct HistoryView: View {
                                 CircleButtonView(title: activity) {
                                     // Burada activity seçme işlemleri yapılacak
                                     print("Selected Activity: \(activity)")
-                                    printMoodStatistics(for: activity)
+                                    viewModel.printMoodStatistics(for: activity)
+                                    
+                                  
+                                    
                                 }
                                 .padding()
                             }
                         }
                     }
+                    VStack {
+                            Chart {
+                                ForEach(viewModel.pieChartData) { data in
+                                    let moodColor = colorForMood[data.title] ?? .black
+                                    SectorMark(angle: .value("Activity", data.value) ,
+                                               angularInset: 2.0)
+                                        .foregroundStyle(moodColor)
+                                    
+                                    
+                                }
+                            }
+                    }
                 }
                 
-
+                
                 Spacer()
                 Button("View Saved Records"){
-                    viewRecords = true
+                    viewModel.viewRecords = true
                 }
             }
             .padding()
         }
     }
+    
+    
 
-    private func formattedDate(_ date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MMM dd, yyyy - HH:mm"
-        return dateFormatter.string(from: date)
-    }
-
-    private func clearAllMoods() {
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = Mood.fetchRequest()
-        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-
-        do {
-            try moc.execute(batchDeleteRequest)
-            try moc.save()
-        } catch {
-            print("Error clearing moods: \(error)")
-        }
-
-        moc.refreshAllObjects()
-    }
     struct CircleButtonView: View {
         let title: String
         let action: () -> Void
@@ -145,38 +180,9 @@ struct HistoryView: View {
         }
     }
     
-    private func printMoodStatistics(for activity: String) {
-           var moodCounts: [String: Int] = [:]
-
-           for mood in filteredMoods {
-               if let moodType = mood.mood {
-                   if mood.activities == activity {
-                       moodCounts[moodType, default: 0] += 1
-                   }
-               }
-           }
-
-           print("Mood Statistics for \(activity):")
-           for (mood, count) in moodCounts {
-               print("\(mood): \(count)")
-           }
-       }
     
-    private func printActivityStatistics(for mood: String) {
-        var activityCounts: [String: Int] = [:]
-
-        for moodEntry in filteredMoods {
-            if let activity = moodEntry.activities, moodEntry.mood == mood {
-                activityCounts[activity, default: 0] += 1
-            }
-        }
-
-        print("Activity Statistics for \(mood):")
-        for (activity, count) in activityCounts {
-            print("\(activity): \(count)")
-        }
-    }
-
-
+    
   
 }
+
+

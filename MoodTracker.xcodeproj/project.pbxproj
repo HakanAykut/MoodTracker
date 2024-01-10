@@ -15,6 +15,8 @@
 		DFE15D7A2B4417E400DD82DA /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE15D792B4417E400DD82DA /* DataController.swift */; };
 		DFE15D7C2B442FAE00DD82DA /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE15D7B2B442FAE00DD82DA /* HistoryView.swift */; };
 		DFE15D7E2B44351E00DD82DA /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE15D7D2B44351E00DD82DA /* MainView.swift */; };
+		DFE15D822B46A7FD00DD82DA /* HistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE15D812B46A7FD00DD82DA /* HistoryViewModel.swift */; };
+		DFE15D842B46C47D00DD82DA /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE15D832B46C47D00DD82DA /* Model.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +29,8 @@
 		DFE15D792B4417E400DD82DA /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		DFE15D7B2B442FAE00DD82DA /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		DFE15D7D2B44351E00DD82DA /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		DFE15D812B46A7FD00DD82DA /* HistoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViewModel.swift; sourceTree = "<group>"; };
+		DFE15D832B46C47D00DD82DA /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,10 +63,13 @@
 		DFE15D642B44174600DD82DA /* MoodTracker */ = {
 			isa = PBXGroup;
 			children = (
+				DFE15D802B46A7D400DD82DA /* UI */,
 				DFE15D652B44174600DD82DA /* MoodTrackerApp.swift */,
 				DFE15D672B44174600DD82DA /* ContentView.swift */,
 				DFE15D7D2B44351E00DD82DA /* MainView.swift */,
 				DFE15D7B2B442FAE00DD82DA /* HistoryView.swift */,
+				DFE15D832B46C47D00DD82DA /* Model.swift */,
+				DFE15D7F2B46A7C600DD82DA /* ViewModel */,
 				DFE15D732B44177500DD82DA /* MoodTracker.xcdatamodeld */,
 				DFE15D792B4417E400DD82DA /* DataController.swift */,
 				DFE15D692B44174800DD82DA /* Assets.xcassets */,
@@ -77,6 +84,21 @@
 				DFE15D6C2B44174800DD82DA /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		DFE15D7F2B46A7C600DD82DA /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				DFE15D812B46A7FD00DD82DA /* HistoryViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		DFE15D802B46A7D400DD82DA /* UI */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = UI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -155,6 +177,8 @@
 				DFE15D7C2B442FAE00DD82DA /* HistoryView.swift in Sources */,
 				DFE15D682B44174600DD82DA /* ContentView.swift in Sources */,
 				DFE15D662B44174600DD82DA /* MoodTrackerApp.swift in Sources */,
+				DFE15D822B46A7FD00DD82DA /* HistoryViewModel.swift in Sources */,
+				DFE15D842B46C47D00DD82DA /* Model.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

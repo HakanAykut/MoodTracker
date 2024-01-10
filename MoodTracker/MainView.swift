@@ -9,7 +9,8 @@ import SwiftUI
 
 struct MainView: View {
     @Environment(\.managedObjectContext) var moc
-    
+    @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \Mood.timestamp, ascending: false)]) var moods: FetchedResults<Mood>
+
     // Resim adlarını içeren dizi
     let moodImages = ["happy", "angry", "sad", "neutral"]
     
@@ -46,7 +47,7 @@ struct MainView: View {
                     Text("Let's Start")
                 }
                 .padding()
-                NavigationLink(destination: HistoryView()) {
+                NavigationLink(destination: HistoryView(viewModel: HistoryViewModel(moods: moods))) {
                     Text("History")
                 }
                 .padding()
