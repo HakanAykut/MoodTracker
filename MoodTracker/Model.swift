@@ -11,5 +11,6 @@ struct PieChartData: Identifiable {
     var id: UUID
     var title: String
     var value: Double
+    var percent: String
     
 }

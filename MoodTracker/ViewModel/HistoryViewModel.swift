@@ -14,7 +14,9 @@ class HistoryViewModel: ObservableObject {
     @Published var selectedPickerOption: String = "Mood"
 
     @Published var moods: FetchedResults<Mood>
-
+    
+    @Published var startActivity: String? = "Sports"
+    @Published var startMood: String? = "Good"
     var filteredMoods: [Mood] {
         if let selectedActivity = selectedActivity, selectedActivity != "All" {
             return moods.filter { $0.activities == selectedActivity }
@@ -55,40 +57,43 @@ class HistoryViewModel: ObservableObject {
 
     func printMoodStatistics(for activity: String) {
         var moodCounts: [String: Int] = [:]
+        var totalMoods = 0
 
         for mood in moods {
-            if let moodType = mood.mood {
-                if mood.activities == activity {
-                    moodCounts[moodType, default: 0] += 1
-                    moodCount = moodCounts
-                }
+            if let moodType = mood.mood, mood.activities == activity {
+                moodCounts[moodType, default: 0] += 1
+                totalMoods += 1
             }
         }
 
         prepareDataForPieChart(activity: activity)
-        //print(prepareDataForPieChart(activity: activity))
+
         print("Mood Statistics for \(activity):")
         for (mood, count) in moodCounts {
-            print("\(mood): \(count)")
-            
+            let percentage = calculatePercentage(count, total: totalMoods)
+            print("\(mood): \(count) - \(percentage)%")
         }
     }
-
     func printActivityStatistics(for mood: String) {
         var activityCounts: [String: Int] = [:]
+        var totalActivities = 0
 
         for moodEntry in moods {
             if let activity = moodEntry.activities, moodEntry.mood == mood {
                 activityCounts[activity, default: 0] += 1
+                totalActivities += 1
             }
         }
+
         prepareDataForActivityPieChart(mood: mood)
-        //print("1----\(prepareDataForPieChart(activity: mood))")
+
         print("Activity Statistics for \(mood):")
         for (activity, count) in activityCounts {
-            print("\(activity): \(count)")
+            let percentage = calculatePercentage(count, total: totalActivities)
+            print("\(activity): \(count) - \(percentage)%")
         }
     }
+
 
     private func calculateMoodStatistics(for activity: String) -> [String: Int] {
         var moodCounts: [String: Int] = [:]
@@ -103,12 +108,15 @@ class HistoryViewModel: ObservableObject {
     }
 
     private func prepareDataForPieChart(activity: String) {
-        pieChartData = calculateMoodStatistics(for: activity)
-            .map { (mood, count) in
-                PieChartData(id: UUID(), title: mood, value: Double(count))
-            }
+        let moodCounts = calculateMoodStatistics(for: activity)
+        let totalMoods = moodCounts.values.reduce(0, +)
+
+        pieChartData = moodCounts.map { (mood, count) in
+            let percentage = calculatePercentage(count, total: totalMoods)
+            return PieChartData(id: UUID(), title: mood, value: Double(count), percent: percentage)
+        }
+
         print("M--\(pieChartData)")
-       
     }
 
     private func calculateActivityStatistics(for mood: String) -> [String: Int] {
@@ -125,23 +133,23 @@ class HistoryViewModel: ObservableObject {
     }
 
     private func prepareDataForActivityPieChart(mood: String) {
-        
-        pieChartData = calculateActivityStatistics(for: mood)
-            .map { (activity, count) in
-                PieChartData(id: UUID(), title: activity, value: Double(count))
-            }
-        print("A--\(pieChartData)")
-        /*
-        let activityStatistics = calculateActivityStatistics(for: mood)
-        print("Activity Statistics for \(mood): \(activityStatistics)")
+        let activityCounts = calculateActivityStatistics(for: mood)
+        let totalActivities = activityCounts.values.reduce(0, +)
 
-        pieChartData = activityStatistics.map { (activity, count) in
-            PieChartData(id: UUID(), title: activity, value: Double(count))
+        pieChartData = activityCounts.map { (activity, count) in
+            let percentage = calculatePercentage(count, total: totalActivities)
+            return PieChartData(id: UUID(), title: activity, value: Double(count), percent: percentage)
         }
 
-        print("Pie Chart Data for \(mood): \(pieChartData)")*/
+        print("A--\(pieChartData)")
     }
 
+    func calculatePercentage(_ count: Int, total: Int) -> String {
+        let percentage = Double(count) / Double(total) * 100.0
+        return String(format: "%.1f", percentage)
+    }
+
+    
     struct CircleButtonView: View {
         let title: String
         let action: () -> Void

@@ -63,20 +63,14 @@ struct ContentView: View {
                             newMood.timestamp = Date()
                             newMood.name = personName
                             newMood.activities = chosenActivity
-                            /*  if !personName.isEmpty {
-                             let person = Mood(context: moc)
-                             person.name = personName
-                             newMood.name = person
-                             }*/
-                            
-                            
+                          
                             do {
                                 try moc.save()
                             } catch {
                                 print("Error saving mood: \(error)")
                             }
                         }
-                       // success = true
+                        success = true
                     }
                     
                    
@@ -165,76 +159,3 @@ struct ActivityButtonView: View {
         .padding()
     }
 }
-
-/*
-import CoreData
-import SwiftUI
-
-struct ContentView: View {
-    @Environment(\.managedObjectContext) var moc
-    @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \Mood.timestamp, ascending: false)]) var moods: FetchedResults<Mood>
-    
-    @State private var selectedMoodIndex = 0
-    let moodOptions = ["Good", "Bad", "Neutral"]
-    
-    var body: some View {
-        VStack {
-            Picker("Select Mood", selection: $selectedMoodIndex) {
-                ForEach(0..<moodOptions.count) { index in
-                    Text(moodOptions[index]).tag(index)
-                }
-            }
-            .pickerStyle(SegmentedPickerStyle())
-            
-            List(moods) { mood in
-                Text("\(mood.mood ?? "Unknown") - \(formattedDate(mood.timestamp ?? Date()))")
-            }
-            
-            Button("Add") {
-                let chosenMood = moodOptions[selectedMoodIndex]
-                
-                let newMood = Mood(context: moc)
-                newMood.id = UUID()
-                newMood.mood = chosenMood
-                newMood.timestamp = Date()
-                
-                do {
-                    try moc.save()
-                } catch {
-                    print("Error saving mood: \(error)")
-                }
-            }
-            Button("Clear All") {
-                       clearAllMoods()
-                   }
-                   .foregroundColor(.red)
-            
-        }
-        .padding()
-    }
-    
-    private func formattedDate(_ date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MMM dd, yyyy - HH:mm"
-        return dateFormatter.string(from: date)
-    }
-    private func clearAllMoods() {
-            let fetchRequest: NSFetchRequest<NSFetchRequestResult> = Mood.fetchRequest()
-            let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-
-            do {
-                try moc.execute(batchDeleteRequest)
-                try moc.save()
-            } catch {
-                print("Error clearing moods: \(error)")
-            }
-        moc.refreshAllObjects()
-        }
-}
-
-
-
-#Preview {
-    ContentView()
-}
-*/
