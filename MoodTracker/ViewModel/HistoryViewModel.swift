@@ -150,23 +150,5 @@ class HistoryViewModel: ObservableObject {
     }
 
     
-    struct CircleButtonView: View {
-        let title: String
-        let action: () -> Void
-
-        var body: some View {
-            VStack {
-                Circle()
-                    .foregroundColor(Color.blue)
-                    .frame(width: 60, height: 60)
-                    .overlay(
-                        Text(title)
-                            .foregroundColor(.white)
-                    )
-                    .onTapGesture {
-                        action()
-                    }
-            }
-        }
-    }
+    
 }

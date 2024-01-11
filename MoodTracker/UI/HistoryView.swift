@@ -10,6 +10,7 @@ import CoreData
 import Charts
 
 struct HistoryView: View {
+    
     @Environment(\.managedObjectContext) var moc
     @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \Mood.timestamp, ascending: false)]) var moods: FetchedResults<Mood>
     
@@ -76,9 +77,11 @@ struct HistoryView: View {
             .padding()
             .navigationBarTitle("History")
         } else {
+            
+                
             VStack {
                 Picker("Select Option", selection:$selectedPickerOption) {
-                   
+                    
                     ForEach(pickerOptions, id: \.self) { option in
                         Text(option)
                         
@@ -86,7 +89,7 @@ struct HistoryView: View {
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 .padding()
-
+                
                 if selectedPickerOption == "Mood" {
                     // let _: () = viewModel.dataClear()
                     
@@ -107,26 +110,27 @@ struct HistoryView: View {
                         }
                     }
                     HStack{
-                    VStack {
-                        Chart {
-                            ForEach(viewModel.pieChartData) { data in
-                                let moodColor = colorForActivity[data.title] ?? .white
-                                
-                                SectorMark(angle: .value("Activity", data.value),
-                                           innerRadius: .ratio(0.3),
-                                           angularInset: 2.0)
-                                .foregroundStyle(moodColor)
-                                .annotation(position: .overlay){
-                                    Text("%\(data.percent)")
-                                        .font(.system(size: 12))
-                                        .foregroundStyle(.white)
+                        VStack {
+                            Chart {
+                                ForEach(viewModel.pieChartData) { data in
+                                    let moodColor = colorForActivity[data.title] ?? .white
+                                    
+                                    SectorMark(angle: .value("Activity", data.value),
+                                               innerRadius: .ratio(0.3),
+                                               angularInset: 2.0)
+                                    .foregroundStyle(moodColor)
+                                    .cornerRadius(5)
+                                    .annotation(position: .overlay){
+                                        Text("%\(data.percent)")
+                                            .font(.system(size: 12))
+                                            .foregroundStyle(.white)
+                                    }
                                 }
                             }
+                            .chartBackground { ChartProxy in
+                                Text(selectedMoodforPieChart)
+                            }
                         }
-                        .chartBackground { ChartProxy in
-                            Text(selectedMoodforPieChart)
-                        }
-                    }
                         VStack(alignment:.leading) {
                             ForEach(activityOptions, id: \.self) { activity in
                                 RectangleButtonView(title: activity)
@@ -143,7 +147,9 @@ struct HistoryView: View {
                     ScrollView(.horizontal) {
                         HStack {
                             ForEach(activityOptions, id: \.self) { activity in
+                                
                                 CircleButtonView(title: activity) {
+                                    selectedActivityforPieChart = activity
                                     // Burada activity seçme işlemleri yapılacak
                                     print("Selected Activity: \(activity)")
                                     viewModel.printMoodStatistics(for: activity)
@@ -156,32 +162,33 @@ struct HistoryView: View {
                         }
                     }
                     HStack{
-                    VStack {
-                        Chart {
-                            ForEach(viewModel.pieChartData) { data in
-                                let moodColor = colorForMood[data.title] ?? .white
-                                SectorMark(angle: .value("Activity", data.value) ,
-                                           innerRadius: .ratio(0.3),
-                                           angularInset: 2.0)
-                                .foregroundStyle(moodColor)
-                                .annotation(position: .overlay){
-                                    Text("%\(data.percent)")
-                                        .font(.system(size: 12))
-                                        .foregroundStyle(.white)
+                        VStack {
+                            Chart {
+                                ForEach(viewModel.pieChartData) { data in
+                                    let moodColor = colorForMood[data.title] ?? .white
+                                    SectorMark(angle: .value("Activity", data.value) ,
+                                               innerRadius: .ratio(0.3),
+                                               angularInset: 2.0)
+                                    .foregroundStyle(moodColor)
+                                    .cornerRadius(5)
+                                    .annotation(position: .overlay){
+                                        Text("%\(data.percent)")
+                                            .font(.system(size: 12))
+                                            .foregroundStyle(.white)
+                                    }
+                                    
+                                    
                                 }
-                                
-                                
+                            }.chartBackground { ChartProxy in
+                                Text(selectedActivityforPieChart)
                             }
-                        }.chartBackground { ChartProxy in
-                            Text(selectedActivityforPieChart)
                         }
-                    }
                         VStack (alignment:.leading){
-                        ForEach(moodOptions, id: \.self) { mood in
-                            RectangleButtonView(title: mood)
-                                .padding()
+                            ForEach(moodOptions, id: \.self) { mood in
+                                RectangleButtonView(title: mood)
+                                    .padding()
+                            }
                         }
-                    }
                         
                     }
                     .onAppear {
@@ -198,67 +205,14 @@ struct HistoryView: View {
                     viewModel.viewRecords = true
                 }
             }
+           // .preferredColorScheme(.dark)
+            
             .padding()
         }
     }
-    
-    
-
-    struct CircleButtonView: View {
-        let title: String
-        let action: () -> Void
-        
-
-        var body: some View {
-            VStack {
-                
-                Circle()
-                    .foregroundColor(.blue)
-                    .frame(width: 50, height: 50)
-                    .overlay(
-                        Text(title)
-                            .foregroundColor(.white)
-                            .font(.system(size: 12))
-                    )
-                    .onTapGesture {
-                        action()
-                    }
-            }
-        }
-    }
-    struct RectangleButtonView: View {
-        let title: String
        
-        let colorForTitle: [String: Color] = [
-            "Angry" : .red,
-            "Good" : .green,
-            "Bad" : .orange,
-            "Neutral" : .cyan,
-            "Sports" : .red,
-            "Home" : .green,
-            "Work" : .orange,
-            "Socializing" : .cyan,
-            "Other" : .gray
-            // Diğer aktivitelerin veya duygu durumlarının renkleri buraya eklenebilir
-        ]
-
-        var body: some View {
-            VStack {
-                HStack{
-                    Rectangle()
-                        .foregroundColor(colorForTitle[title] ?? .blue)
-                        .frame(width: 15, height: 15)
-                    
-                    Text(title)
-                        .foregroundColor(.black)
-                        .font(.system(size: 10))
-                        .lineLimit(1) // Metni bir satırda sınırla
-                        .minimumScaleFactor(0.5) // Gerekirse metni küçült
-                }
-                    
-            }
-        }
-    }
+    
+ 
     
     
   

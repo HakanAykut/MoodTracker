@@ -15,6 +15,7 @@ struct MoodTrackerApp: App {
         WindowGroup {
             MainView()
                 .environment(\.managedObjectContext, dataController.container.viewContext)
+               
            
         }
     }

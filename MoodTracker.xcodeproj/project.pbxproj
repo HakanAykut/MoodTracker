@@ -17,6 +17,7 @@
 		DFE15D7E2B44351E00DD82DA /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE15D7D2B44351E00DD82DA /* MainView.swift */; };
 		DFE15D822B46A7FD00DD82DA /* HistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE15D812B46A7FD00DD82DA /* HistoryViewModel.swift */; };
 		DFE15D842B46C47D00DD82DA /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE15D832B46C47D00DD82DA /* Model.swift */; };
+		DFE15D892B4EBA5700DD82DA /* Structs.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE15D882B4EBA5700DD82DA /* Structs.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		DFE15D7D2B44351E00DD82DA /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		DFE15D812B46A7FD00DD82DA /* HistoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViewModel.swift; sourceTree = "<group>"; };
 		DFE15D832B46C47D00DD82DA /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		DFE15D882B4EBA5700DD82DA /* Structs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Structs.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,15 +65,13 @@
 		DFE15D642B44174600DD82DA /* MoodTracker */ = {
 			isa = PBXGroup;
 			children = (
-				DFE15D802B46A7D400DD82DA /* UI */,
 				DFE15D652B44174600DD82DA /* MoodTrackerApp.swift */,
-				DFE15D672B44174600DD82DA /* ContentView.swift */,
-				DFE15D7D2B44351E00DD82DA /* MainView.swift */,
-				DFE15D7B2B442FAE00DD82DA /* HistoryView.swift */,
 				DFE15D832B46C47D00DD82DA /* Model.swift */,
+				DFE15D802B46A7D400DD82DA /* UI */,
 				DFE15D7F2B46A7C600DD82DA /* ViewModel */,
+				DFE15D872B4EBA3000DD82DA /* Structs */,
+				DFE15D8A2B4EBC4100DD82DA /* DataController */,
 				DFE15D732B44177500DD82DA /* MoodTracker.xcdatamodeld */,
-				DFE15D792B4417E400DD82DA /* DataController.swift */,
 				DFE15D692B44174800DD82DA /* Assets.xcassets */,
 				DFE15D6B2B44174800DD82DA /* Preview Content */,
 			);
@@ -97,8 +97,27 @@
 		DFE15D802B46A7D400DD82DA /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				DFE15D7D2B44351E00DD82DA /* MainView.swift */,
+				DFE15D672B44174600DD82DA /* ContentView.swift */,
+				DFE15D7B2B442FAE00DD82DA /* HistoryView.swift */,
 			);
 			path = UI;
+			sourceTree = "<group>";
+		};
+		DFE15D872B4EBA3000DD82DA /* Structs */ = {
+			isa = PBXGroup;
+			children = (
+				DFE15D882B4EBA5700DD82DA /* Structs.swift */,
+			);
+			path = Structs;
+			sourceTree = "<group>";
+		};
+		DFE15D8A2B4EBC4100DD82DA /* DataController */ = {
+			isa = PBXGroup;
+			children = (
+				DFE15D792B4417E400DD82DA /* DataController.swift */,
+			);
+			path = DataController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -171,6 +190,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DFE15D892B4EBA5700DD82DA /* Structs.swift in Sources */,
 				DFE15D752B44177500DD82DA /* MoodTracker.xcdatamodeld in Sources */,
 				DFE15D7E2B44351E00DD82DA /* MainView.swift in Sources */,
 				DFE15D7A2B4417E400DD82DA /* DataController.swift in Sources */,

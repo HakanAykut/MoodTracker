@@ -18,10 +18,11 @@ struct MainView: View {
     
     var body: some View {
         NavigationView {
+          
             VStack {
                 Text("How Do You Feel?")
                     .padding()
-                // Animasyonlu resim gösterimi
+                
                 Image(moodImages[currentIndex])
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -36,7 +37,7 @@ struct MainView: View {
                             }
                         }
                         
-                        // Timer'ı başlat
+                        
                         timer.fire()
                     }
                     .padding()
@@ -47,12 +48,19 @@ struct MainView: View {
                     Text("Let's Start")
                 }
                 .padding()
-                NavigationLink(destination: HistoryView(viewModel: HistoryViewModel(moods: moods))) {
+                NavigationLink(destination: HistoryView(viewModel: HistoryViewModel(moods: moods)).preferredColorScheme(.dark)) {
                     Text("History")
+                       // .preferredColorScheme(.dark)
                 }
                 .padding()
+                
             }
+           
+            
         }
+        .navigationBarBackButtonHidden(true)
+        //.preferredColorScheme(.light)
+        
     }
 }
 

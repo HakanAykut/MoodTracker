@@ -11,6 +11,7 @@ import CoreData
 struct ContentView: View {
     @Environment(\.managedObjectContext) var moc
     @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \Mood.timestamp, ascending: false)]) var moods: FetchedResults<Mood>
+    @Environment(\.presentationMode) var presentationMode
 
     @State private var selectedMoodIndex: Int?
     @State private var selectedActivities: Int?
@@ -99,17 +100,22 @@ struct ContentView: View {
                             .padding()
                             .multilineTextAlignment(.center)
                         Spacer()
-                        NavigationLink(destination: MainView().navigationBarBackButtonHidden(true)) {
+                        NavigationLink(destination: MainView()) {
                             Text("OK")
+                        }
+                        .onTapGesture {
+                            self.presentationMode.wrappedValue.dismiss()
                         }
                         Spacer()
                     }
                     .frame(width: 350, height: 400)
                     .background(Color.white)
                     .clipShape(RoundedRectangle(cornerRadius: 25,style: .continuous))
+                    //.navigationBarBackButtonHidden(false)
                 }
             }
         }
+        .navigationBarBackButtonHidden(success)
             
     }
 }
@@ -120,42 +126,3 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 
-struct MoodButtonView: View {
-    let mood: String
-    let isSelected: Bool
-    var onTap: () -> Void
-
-    var body: some View {
-        VStack {
-            Circle()
-                .foregroundColor(isSelected ? Color.blue : Color.gray)
-                .frame(width: 20, height: 20)
-                .onTapGesture {
-                    onTap()
-                }
-
-            Text(mood)
-        }
-        .padding()
-    }
-}
-struct ActivityButtonView: View {
-    let activity: String
-    let isSelected: Bool
-    var onTap: () -> Void
-
-    var body: some View {
-        VStack {
-            Circle()
-                .foregroundColor(isSelected ? Color.blue : Color.gray)
-                .frame(width: 20, height: 20)
-                .onTapGesture {
-                    onTap()
-                }
-
-            Text(activity)
-                .font(.system(size: 10))
-        }
-        .padding()
-    }
-}
